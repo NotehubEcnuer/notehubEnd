@@ -18,6 +18,7 @@ public class Note implements Serializable {
     @Id
     private String id;
     private String authorId;
+    private String authorName;
     private String title;
     private Integer authority;
     private Date createTime;

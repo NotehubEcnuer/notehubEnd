@@ -1,17 +1,13 @@
 package com.ecnu.notehub.controller;
 
-import com.ecnu.notehub.dao.NoteDao;
-import com.ecnu.notehub.dao.NoteSearchDao;
-import com.ecnu.notehub.domain.Note;
 import com.ecnu.notehub.search.NoteIndex;
 import com.ecnu.notehub.service.NoteService;
-import org.springframework.beans.BeanUtils;
+import com.ecnu.notehub.vo.ResultEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author onion
@@ -20,36 +16,10 @@ import java.util.List;
 @RestController
 public class NoteController {
     @Autowired
-    private NoteDao noteDao;
-    @Autowired
-    private NoteSearchDao noteSearchDao;
-    @Autowired
     private NoteService noteService;
     @GetMapping("/keyword")
-    public Page<NoteIndex> getByTitle(@RequestParam String title){
-        return noteService.findByTitle(title);
-    }
-    @PostMapping("/synchronize")
-    public String synchronize(){
-        List<Note> all = noteDao.findAll();
-        all.stream().forEach(e->{
-            NoteIndex noteIndex = new NoteIndex();
-            BeanUtils.copyProperties(e, noteIndex, "content");
-            noteSearchDao.save(noteIndex);
-        });
-        return "finish";
-    }
-    @PostMapping("/addNote")
-    public String addNote(@RequestBody Note note){
-        note.setCreateTime(new Date());
-        note.setUpdateTime(new Date());
-        note.setDownloads(0);
-        note.setHates(0);
-        note.setStars(0);
-        note.setVisits(0);
-        note.setTypes(0);
-        note.setAuthority(0);
-        noteDao.save(note);
-        return "success";
+    public ResultEntity getByTitle(@RequestParam String title){
+        Page<NoteIndex> results = noteService.findByTitle(title);
+        return ResultEntity.succeed(results);
     }
 }

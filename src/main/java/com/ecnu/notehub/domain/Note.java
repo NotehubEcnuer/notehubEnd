@@ -31,4 +31,5 @@ public class Note implements Serializable {
     private Integer downloads;
     private String content;
     private Integer types;
+
 }

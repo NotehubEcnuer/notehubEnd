@@ -2,12 +2,14 @@ package com.ecnu.notehub;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * @author onion
  * @date 2019/11/1 -8:17 下午
  */
 @SpringBootApplication
+@EnableScheduling
 public class NoteApplication {
     public static void main(String[] args) {
         SpringApplication.run(NoteApplication.class, args);

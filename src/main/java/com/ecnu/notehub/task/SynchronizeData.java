@@ -2,9 +2,15 @@ package com.ecnu.notehub.task;
 
 import com.ecnu.notehub.dao.NoteDao;
 import com.ecnu.notehub.dao.NoteSearchDao;
+import com.ecnu.notehub.domain.Note;
+import com.ecnu.notehub.search.NoteIndex;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author onion
@@ -19,15 +25,16 @@ public class SynchronizeData {
     @Autowired
     private NoteSearchDao noteSearchDao;
 
-//    @Scheduled(cron = "0 0 2 ?")
-//    public void copyMongoToEs(){
-//        log.info("开始拷贝Mongodb数据到ElasticSearch");
-//        List<Note> all = noteDao.findAllByUpdateTimeAfter(new Date());
-//        all.forEach(e->{
-//            NoteIndex noteIndex = new NoteIndex();
-//            BeanUtils.copyProperties(e, noteIndex, "content");
-//            noteSearchDao.save(noteIndex);
-//        });
-//    }
+    //@Scheduled(cron = "0 0 2 ?")
+    public void copyMongoToEs(){
+        log.info("开始拷贝Mongodb数据到ElasticSearch");
+        LocalDateTime localDateTime = LocalDateTime.now().minusDays(1);
+        List<Note> all = noteDao.findAllByUpdateTimeAfter(localDateTime);
+        all.forEach(e->{
+            NoteIndex noteIndex = new NoteIndex();
+            BeanUtils.copyProperties(e, noteIndex, "content");
+            noteSearchDao.save(noteIndex);
+        });
+    }
 
 }

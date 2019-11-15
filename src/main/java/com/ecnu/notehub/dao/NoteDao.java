@@ -4,7 +4,7 @@ import com.ecnu.notehub.domain.Note;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -13,5 +13,5 @@ import java.util.List;
  */
 @Repository
 public interface NoteDao extends MongoRepository<Note, String> {
-    List<Note> findAllByUpdateTimeAfter(Date localDateTime);
+    List<Note> findAllByUpdateTimeAfter(LocalDateTime localDateTime);
 }

@@ -13,8 +13,8 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,6 +29,12 @@ public class NodeApplicationTests {
 
     @Autowired
     private NoteSearchDao noteSearchDao;
+
+    @Test
+    public void testTime(){
+        LocalDateTime localDateTime = LocalDateTime.now().minusDays(1);
+        System.out.println(localDateTime);
+    }
 
     @Test
     @Transactional
@@ -58,8 +64,8 @@ public class NodeApplicationTests {
             note.setAuthorName(fields[19]);
             note.setSummary(fields[22]);
             cnt ++;
-            note.setCreateTime(new Date());
-            note.setUpdateTime(new Date());
+//            note.setCreateTime(new Date());
+//            note.setUpdateTime(new Date());
             note.setHates(0);
             note.setStars(0);
             note.setTypes(0);

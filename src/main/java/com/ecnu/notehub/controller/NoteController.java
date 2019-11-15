@@ -22,4 +22,9 @@ public class NoteController {
         Page<NoteIndex> results = noteService.findByTitle(title);
         return ResultEntity.succeed(results);
     }
+    @GetMapping("/relation")
+    public ResultEntity search(@RequestParam String keyword){
+        Page<NoteIndex> results = noteService.search(keyword);
+        return ResultEntity.succeed(results);
+    }
 }

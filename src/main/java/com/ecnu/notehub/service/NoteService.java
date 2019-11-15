@@ -2,6 +2,7 @@ package com.ecnu.notehub.service;
 
 import com.ecnu.notehub.dao.NoteSearchDao;
 import com.ecnu.notehub.search.NoteIndex;
+import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ public class NoteService {
     @Autowired
     private ElasticsearchTemplate elasticsearchTemplate;
 
+
+
     @Autowired
     private NoteSearchDao noteSearchDao;
 
@@ -31,5 +34,12 @@ public class NoteService {
                 .build();
         return noteSearchDao.search(searchQuery);
 
+    }
+
+    public Page<NoteIndex> search(String keyword) {
+        NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
+        MultiMatchQueryBuilder multiMatchQueryBuilder = QueryBuilders.multiMatchQuery(keyword, "title", "summary");
+        nativeSearchQueryBuilder.withQuery(multiMatchQueryBuilder);
+        return noteSearchDao.search(nativeSearchQueryBuilder.build());
     }
 }

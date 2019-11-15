@@ -1,11 +1,13 @@
 import com.ecnu.notehub.NoteApplication;
 import com.ecnu.notehub.dao.NoteDao;
+import com.ecnu.notehub.dao.NoteSearchDao;
 import com.ecnu.notehub.domain.Note;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.ecnu.notehub.search.NoteIndex;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -13,18 +15,31 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author onion
  * @date 2019/11/8 -6:31 下午
  */
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = NoteApplication.class)
 public class NodeApplicationTests {
     @Autowired
     private NoteDao noteDao;
 
+    @Autowired
+    private NoteSearchDao noteSearchDao;
+
+    @Test
+    @Transactional
+    public void testSynchronize(){
+        List<Note> all = noteDao.findAll();
+        all.stream().forEach(e->{
+            NoteIndex noteIndex = new NoteIndex();
+            BeanUtils.copyProperties(e, noteIndex, "content");
+            noteSearchDao.save(noteIndex);
+        });
+    }
     @Test
     public void addNote() throws Exception {
         BufferedReader file = new BufferedReader(new InputStreamReader(new FileInputStream("/Users/root1/Downloads/JavaProject/Notehub/src/main/resources/arch.csv"), StandardCharsets.UTF_8));

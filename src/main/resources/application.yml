@@ -3,8 +3,12 @@ spring:
     mongodb:
       database: notehub
       host: 120.77.176.55
+    elasticsearch:
+      cluster-name: docker-cluster
+      cluster-nodes: 139.9.217.28:9300
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://120.77.176.55:3306/notehub?serverTimezone=Asia/Shanghai&useSSL=false&characterEncoding=utf8
     username: root
     password: root
+

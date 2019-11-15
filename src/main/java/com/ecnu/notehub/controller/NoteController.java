@@ -1,13 +1,17 @@
 package com.ecnu.notehub.controller;
 
 import com.ecnu.notehub.dao.NoteDao;
+import com.ecnu.notehub.dao.NoteSearchDao;
 import com.ecnu.notehub.domain.Note;
+import com.ecnu.notehub.search.NoteIndex;
+import com.ecnu.notehub.service.NoteService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author onion
@@ -17,6 +21,24 @@ import java.util.Date;
 public class NoteController {
     @Autowired
     private NoteDao noteDao;
+    @Autowired
+    private NoteSearchDao noteSearchDao;
+    @Autowired
+    private NoteService noteService;
+    @GetMapping("/keyword")
+    public Page<NoteIndex> getByTitle(@RequestParam String title){
+        return noteService.findByTitle(title);
+    }
+    @PostMapping("/synchronize")
+    public String synchronize(){
+        List<Note> all = noteDao.findAll();
+        all.stream().forEach(e->{
+            NoteIndex noteIndex = new NoteIndex();
+            BeanUtils.copyProperties(e, noteIndex, "content");
+            noteSearchDao.save(noteIndex);
+        });
+        return "finish";
+    }
     @PostMapping("/addNote")
     public String addNote(@RequestBody Note note){
         note.setCreateTime(new Date());

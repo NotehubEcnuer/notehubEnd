@@ -27,4 +27,5 @@ public class NoteController {
         Page<NoteIndex> results = noteService.search(keyword);
         return ResultEntity.succeed(results);
     }
+
 }

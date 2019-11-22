@@ -1,7 +1,9 @@
 spring:
+  rabbitmq:
+    host: 120.77.176.55
   data:
     mongodb:
-      database: notehub
+      database: leetcode
       host: 120.77.176.55
     elasticsearch:
       cluster-name: docker-cluster

@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author onion
@@ -23,7 +23,7 @@ public class Note implements Serializable {
     private Integer authority;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
-    private List<String> tags;
+    private Set<String> tags;
     private String summary;
     private Integer stars;
     private Integer visits;

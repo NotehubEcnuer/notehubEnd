@@ -14,7 +14,6 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -40,7 +39,7 @@ public class NodeApplicationTests {
     @Transactional
     public void testSynchronize(){
         List<Note> all = noteDao.findAll();
-        all.stream().forEach(e->{
+        all.forEach(e->{
             NoteIndex noteIndex = new NoteIndex();
             BeanUtils.copyProperties(e, noteIndex, "content");
             noteSearchDao.save(noteIndex);
@@ -70,7 +69,7 @@ public class NodeApplicationTests {
             note.setStars(0);
             note.setTypes(0);
             note.setAuthority(0);
-            note.setTags(Arrays.asList("算法"));
+//            note.setTags(Arrays.asList("算法"));
             noteDao.save(note);
         }
 

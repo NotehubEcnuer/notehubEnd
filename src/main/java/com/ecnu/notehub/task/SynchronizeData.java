@@ -7,6 +7,7 @@ import com.ecnu.notehub.search.NoteIndex;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -25,7 +26,7 @@ public class SynchronizeData {
     @Autowired
     private NoteSearchDao noteSearchDao;
 
-    //@Scheduled(cron = "0 0 2 ?")
+    @Scheduled(cron = "0 0 2 1/1 * ? ")
     public void copyMongoToEs(){
         log.info("开始拷贝Mongodb数据到ElasticSearch");
         LocalDateTime localDateTime = LocalDateTime.now().minusDays(1);

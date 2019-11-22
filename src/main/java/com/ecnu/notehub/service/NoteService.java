@@ -21,8 +21,6 @@ public class NoteService {
     @Autowired
     private ElasticsearchTemplate elasticsearchTemplate;
 
-
-
     @Autowired
     private NoteSearchDao noteSearchDao;
 
@@ -33,7 +31,6 @@ public class NoteService {
                 .withQuery(QueryBuilders.matchQuery("title", title))
                 .build();
         return noteSearchDao.search(searchQuery);
-
     }
 
     public Page<NoteIndex> search(String keyword) {

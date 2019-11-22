@@ -5,6 +5,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Set;
 
 /**
  * @author onion
@@ -20,4 +22,13 @@ public class User implements Serializable {
     private Integer downloads;
     private Integer collects;
     private Integer publishes;
+    private Integer role;
+    private Set<String> publishNoteId;
+    private Set<String> followNoteId;
+    private Set<String> downloadNoteId;
+    private LocalDateTime registerTime;
+    private LocalDateTime LastLoginTime;
+    private String LastIp;
+    private boolean disabled;
+
 }

@@ -42,5 +42,4 @@ public class NoteIndex {
     @Field(type = FieldType.Text, analyzer = "ik_max_word", searchAnalyzer = "ik_smart")
     private String title;
 
-
 }

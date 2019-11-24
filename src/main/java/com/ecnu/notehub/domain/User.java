@@ -18,6 +18,7 @@ public class User implements Serializable {
     @Id
     private String id;
     private String account;
+    private String nickname;
     private String password;
     private Integer downloads;
     private Integer collects;

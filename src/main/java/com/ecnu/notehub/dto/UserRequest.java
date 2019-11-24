@@ -12,4 +12,7 @@ public class UserRequest {
     private String password;
     private String code;
     private String token;
+    private String nickname;
+    private String ip;
+    private Integer role;
 }

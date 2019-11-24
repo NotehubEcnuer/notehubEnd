@@ -7,6 +7,7 @@ import com.ecnu.notehub.enums.ResultEnum;
 import com.ecnu.notehub.exception.MyException;
 import com.ecnu.notehub.service.UserService;
 import com.ecnu.notehub.vo.ResultEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/user")
+@Slf4j
 public class UserController {
     @Autowired
     private UserService userService;
@@ -35,6 +37,7 @@ public class UserController {
     @LoginRequired(loginRequired = false)
     public ResultEntity register(@RequestBody UserRequest userRequest){
         userService.register(userRequest);
+        log.info("{}通过ip:{}注册了账号", userRequest.getAccount(), userRequest.getIp());
         return ResultEntity.succeed();
     }
 
@@ -45,8 +48,4 @@ public class UserController {
         return ResultEntity.succeed(loginInfo);
     }
 
-    @PostMapping
-    public ResultEntity register(@RequestParam String email){
-        return null;
-    }
 }

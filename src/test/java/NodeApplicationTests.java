@@ -19,12 +19,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 //@WebMvcTest(value = NoteController.class)
 
 public class NodeApplicationTests {
-    @Value("qiniu.access-key")
+    @Value("${qiniu.access-key}")
     String accessKey;
-    @Value("qiniu.secret-key")
+    @Value("${qiniu.secret-key}")
     String secretKey;
-    @Value("qiniu.bucket")
+    @Value("${qiniu.bucket}")
     String bucket;
+
+    @Test
+    public void test(){
+        System.out.println(accessKey);
+        System.out.println(secretKey);
+        System.out.println(bucket);
+    }
 //    @Autowired
 //    private NoteController noteController;
 //    @Autowired

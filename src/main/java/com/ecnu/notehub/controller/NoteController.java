@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Map;
 
 /**
  * @author onion
@@ -54,8 +53,8 @@ public class NoteController {
         String[] split = tags.split(",");
         noteRequest.setTags(new HashSet<>(Arrays.asList(split)));
         noteRequest.setTypes(types);
-        Map<String, String> info = noteService.addPdf(noteRequest);
-        return ResultEntity.succeed(info);
+        noteService.addPdf(noteRequest);
+        return ResultEntity.succeed();
     }
 
 }

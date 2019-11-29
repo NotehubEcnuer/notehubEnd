@@ -15,7 +15,8 @@ public enum ResultEnum {
     CODE_NOT_EXIST(1003, "验证码不存在"),
     WRONG_CODE(1004, "验证码错误"),
     FILE_NOT_EXIST(1005, "文件不存在"),
-    FILE_CANNOT_PARSE(1006, "文件解析出错");
+    FILE_CANNOT_PARSE(1006, "文件解析出错"),
+    FILE_UPLOAD_ERROR(1007, "文件上传出错"),
     ;
     private int code;
     private String message;

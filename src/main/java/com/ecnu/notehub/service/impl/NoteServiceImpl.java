@@ -1,5 +1,6 @@
 package com.ecnu.notehub.service.impl;
 
+import com.ecnu.notehub.dao.NoteDao;
 import com.ecnu.notehub.dao.NoteSearchDao;
 import com.ecnu.notehub.domain.Note;
 import com.ecnu.notehub.dto.NoteRequest;
@@ -22,6 +23,7 @@ import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -29,10 +31,8 @@ import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author onion
@@ -47,12 +47,15 @@ public class NoteServiceImpl implements NoteService {
     @Autowired
     private NoteSearchDao noteSearchDao;
 
-//    @Value("qiniu.access-key")
-    private String accessKey = "SStPJbNpriAFEzb0LvB1ooO7X__CB5xpwt8cE8UE";
-//    @Value("qiniu.secret-key")
-    private String secretKey = "aMbK1T32B4_Gidwm_zbFAVPmaBG2j-DgZkEQLEmT";
-//    @Value("qiniu-bucket")
-    private String bucket = "notehub";
+    @Autowired
+    private NoteDao noteDao;
+
+    @Value("${qiniu.access-key}")
+    private String accessKey;
+    @Value("${qiniu.secret-key}")
+    private String secretKey;
+    @Value("${qiniu.bucket}")
+    private String bucket;
 
     @Override
     public Page<NoteIndex> findByTitle(String title){
@@ -73,7 +76,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Map<String, String> addPdf(NoteRequest noteRequest) {
+    public void addPdf(NoteRequest noteRequest) {
         String id = KeyGenerateUtil.genUniqueKey();
         Note note = new Note();
         note.setAuthorId(noteRequest.getAuthorId());
@@ -90,41 +93,34 @@ public class NoteServiceImpl implements NoteService {
         note.setStars(0);
         note.setVisits(0);
         note.setFollows(0);
-        Map<String, String> map = new HashMap<>();
         if(noteRequest.getTypes() == TypeEnum.PDF.getCode()){
             if(noteRequest.getFile() == null){
                 throw new MyException(ResultEnum.FILE_NOT_EXIST);
             }
             try {
-                return uploadFile(noteRequest.getFile(), noteRequest.getTitle(), id);
+                uploadFile(noteRequest.getFile(), noteRequest.getTitle(), id);
             }catch (Exception e){
                 e.printStackTrace();
             }
         }else{
             note.setContent(noteRequest.getContent());
         }
-        return map;
+        noteDao.save(note);
     }
-    private Map<String, String> uploadFile(MultipartFile file, String title, String id) throws Exception{
-        FileInputStream fileInputStream = (FileInputStream) file.getInputStream();
+    private void uploadFile(MultipartFile file, String title, String id) throws Exception{
+        InputStream fileInputStream = file.getInputStream();
         String key = title + id + ".pdf";
         Configuration cfg = new Configuration(Region.region2());
         UploadManager uploadManager = new UploadManager(cfg);
         Auth auth = Auth.create(accessKey, secretKey);
         String upToken = auth.uploadToken(bucket);
-        HashMap<String, String> map = new HashMap<>();
         System.out.println(file);
         try {
             Response response = uploadManager.put(fileInputStream, key, upToken, null, null);
             DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
-            map.put("key", putRet.key);
-            log.info("upload file : {}", key);
-            map.put("hash", putRet.hash);
+            log.info("upload file : {}", putRet);
         } catch (QiniuException ex) {
-            ex.printStackTrace();
-//            Response r = ex.response;
-//            log.info(r.toString());
+            throw new MyException(ResultEnum.FILE_UPLOAD_ERROR);
         }
-        return map;
     }
 }

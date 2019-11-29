@@ -9,11 +9,13 @@ import lombok.Getter;
 @Getter
 public enum ResultEnum {
     //code从100开始
-    EMAIL_IN_USE(100, "邮箱已经被注册"),
-    INVALID_TOKEN(101, "无效的令牌"),
-    MUST_LOGIN(102, "会话过期，请先登陆"),
-    CODE_NOT_EXIST(103, "验证码不存在"),
-    WRONG_CODE(104, "验证码错误"),
+    EMAIL_IN_USE(1000, "邮箱已经被注册"),
+    INVALID_TOKEN(1001, "无效的令牌"),
+    MUST_LOGIN(1002, "会话过期，请先登陆"),
+    CODE_NOT_EXIST(1003, "验证码不存在"),
+    WRONG_CODE(1004, "验证码错误"),
+    FILE_NOT_EXIST(1005, "文件不存在"),
+    FILE_CANNOT_PARSE(1006, "文件解析出错");
     ;
     private int code;
     private String message;

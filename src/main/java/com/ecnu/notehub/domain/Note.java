@@ -29,6 +29,7 @@ public class Note implements Serializable {
     private Integer visits;
     private Integer hates;
     private Integer downloads;
+    private Integer follows;
     private String content;
     private Integer types;
 

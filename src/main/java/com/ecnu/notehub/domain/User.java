@@ -31,5 +31,6 @@ public class User implements Serializable {
     private LocalDateTime LastLoginTime;
     private String LastIp;
     private boolean disabled;
+    private String profileUrl;
 
 }

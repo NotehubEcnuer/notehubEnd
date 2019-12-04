@@ -1,4 +1,5 @@
 import com.ecnu.notehub.NoteApplication;
+import com.ecnu.notehub.service.MailService;
 import com.google.gson.Gson;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
@@ -8,8 +9,16 @@ import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.util.Auth;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author onion
  * @date 2019/11/8 -6:31 下午
@@ -26,11 +35,38 @@ public class NodeApplicationTests {
     @Value("${qiniu.bucket}")
     String bucket;
 
+    @Autowired
+    private MailService mailService;
+
     @Test
     public void test(){
         System.out.println(accessKey);
         System.out.println(secretKey);
         System.out.println(bucket);
+    }
+
+    @Test
+    public void testSendFileEmail(){
+        Map<String, String> attachmentMap = new HashMap<>();
+        attachmentMap.put("附件.pdf", "/Users/root1/Desktop/机器学习.pdf");
+        try {
+            mailService.sendHtmlMail("10175101226@stu.ecnu.edu.cn", "测试Springboot发送带附件的邮件", "欢迎进入<a href=\"http://www.baidu.com\">百度首页</a>", attachmentMap);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+        System.out.println("finally");
+    }
+
+    @Test
+    public void testDownload() throws UnsupportedEncodingException {
+        String fileName = "堆.pdf";
+        String domainOfBucket = "http://ecnuonion.club";
+        String encodedFileName = URLEncoder.encode(fileName, "utf-8").replace("+", "%20");
+        String publicUrl = String.format("%s/%s", domainOfBucket, encodedFileName);
+        Auth auth = Auth.create(accessKey, secretKey);
+        long expireInSeconds = 3600;//1小时，可以自定义链接过期时间
+        String finalUrl = auth.privateDownloadUrl(publicUrl, expireInSeconds);
+        System.out.println(finalUrl);
     }
 //    @Autowired
 //    private NoteController noteController;

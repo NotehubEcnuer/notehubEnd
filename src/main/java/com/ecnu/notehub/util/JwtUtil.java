@@ -1,5 +1,6 @@
 package com.ecnu.notehub.util;
 
+import com.ecnu.notehub.domain.User;
 import com.ecnu.notehub.enums.ResultEnum;
 import com.ecnu.notehub.exception.MyException;
 import io.jsonwebtoken.Claims;
@@ -16,10 +17,10 @@ import java.util.Date;
 public class JwtUtil {
     private static final String key = "ecnuOnion";
     private static final long ttl = 60 * 60 * 24 * 1000;
-    public static String createJwt(String id){
+    public static String createJwt(User user){
         long now = System.currentTimeMillis();
         JwtBuilder builder = Jwts.builder()
-                .setId(id)
+                .setId(user.getId())
                 .setIssuedAt(new Date(now))
                 .signWith(SignatureAlgorithm.HS256, key)
                 .setExpiration(new Date(now + ttl));

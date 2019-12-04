@@ -3,16 +3,33 @@ spring:
     host: 120.77.176.55
   data:
     mongodb:
-      database: leetcode
+      database: notehub
       host: 120.77.176.55
     elasticsearch:
       cluster-name: docker-cluster
       cluster-nodes: 139.9.217.28:9300
+  redis:
+    host: 120.77.176.55 #192.168.31.243
+    port: 6379
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://120.77.176.55:3306/notehub?serverTimezone=Asia/Shanghai&useSSL=false&characterEncoding=utf8
     username: root
     password: root
+  mail:
+    protocol: smtp
+    host: smtp.qq.com
+    port: 465
+    username: 1452618379@qq.com
+    password: tpdvwwqgafgwicae
+    default-encoding: utf-8
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+    from: 1452618379@qq.com
+
 qiniu:
   accessKey: "SStPJbNpriAFEzb0LvB1ooO7X__CB5xpwt8cE8UE"
   secretKey: "aMbK1T32B4_Gidwm_zbFAVPmaBG2j-DgZkEQLEmT"

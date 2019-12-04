@@ -14,4 +14,8 @@ public interface NoteService {
     Page<NoteIndex> search(String keyword);
 
     void addPdf(NoteRequest noteRequest);
+
+    String findPdfById(String noteId);
+
+    void addNote(NoteRequest noteRequest);
 }

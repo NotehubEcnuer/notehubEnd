@@ -48,4 +48,11 @@ public class UserController {
         return ResultEntity.succeed(loginInfo);
     }
 
+    @GetMapping("/sendCode")
+    @LoginRequired(loginRequired = false)
+    public ResultEntity sendCode(@RequestParam String email){
+        userService.sendCode(email);
+        return ResultEntity.succeed();
+    }
+
 }

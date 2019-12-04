@@ -32,8 +32,7 @@ public class NoteController {
         Page<NoteIndex> results = noteService.search(keyword);
         return ResultEntity.succeed(results);
     }
-
-    @PostMapping("/addNote")
+    @PostMapping("/addPdf")
     @LoginRequired(loginRequired = false)
     public ResultEntity addPdf(@RequestParam(value = "file")MultipartFile file,
                                @RequestParam String authorId,
@@ -55,6 +54,18 @@ public class NoteController {
         noteRequest.setTypes(types);
         noteService.addPdf(noteRequest);
         return ResultEntity.succeed();
+    }
+    @PostMapping("/addNote")
+    @LoginRequired(loginRequired = false)
+    public ResultEntity addNote(@RequestBody NoteRequest noteRequest){
+        noteService.addNote(noteRequest);
+        return ResultEntity.succeed();
+    }
+    @GetMapping("/downloadNote")
+    @LoginRequired(loginRequired = false)
+    public ResultEntity downloadPdf(@RequestParam String noteId){
+        String link  = noteService.findPdfById(noteId);
+        return ResultEntity.succeed(link);
     }
 
 }

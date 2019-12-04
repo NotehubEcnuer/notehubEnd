@@ -15,4 +15,6 @@ public interface UserService {
     void register(UserRequest userRequest);
 
     Map<String, String> login(UserRequest userRequest);
+
+    void sendCode(String email);
 }

@@ -32,7 +32,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 /**
  * @author onion
@@ -56,6 +59,8 @@ public class NoteServiceImpl implements NoteService {
     private String secretKey;
     @Value("${qiniu.bucket}")
     private String bucket;
+    @Value("3600")
+    private long expireInSeconds;
 
     @Override
     public Page<NoteIndex> findByTitle(String title){
@@ -75,10 +80,51 @@ public class NoteServiceImpl implements NoteService {
         return noteSearchDao.search(nativeSearchQueryBuilder.build());
     }
 
+    //上传pdf到七牛云
     @Override
     public void addPdf(NoteRequest noteRequest) {
         String id = KeyGenerateUtil.genUniqueKey();
         Note note = new Note();
+        initNote(note, noteRequest, id);
+        if(noteRequest.getTypes() == TypeEnum.PDF.getCode()){
+            if(noteRequest.getFile() == null){
+                throw new MyException(ResultEnum.FILE_NOT_EXIST);
+            }
+            try {
+                uploadFile(noteRequest.getFile(), noteRequest.getTitle(), id);
+                note.setContent(noteRequest.getTitle() + id + ".pdf");
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }else{
+            note.setContent(noteRequest.getContent());
+        }
+        noteDao.save(note);
+    }
+
+    //返回pdf下载链接
+    @Override
+    public String findPdfById(String noteId) {
+        Optional<Note> optional = noteDao.findById(noteId);
+        if (optional.isPresent()){
+            Note note = optional.get();
+            String fileName = note.getContent();
+            return downloadFile(fileName);
+        }else{
+            throw new MyException(ResultEnum.FILE_NOT_EXIST);
+        }
+    }
+
+    //添加非pdf笔记到mongodb
+    @Override
+    public void addNote(NoteRequest noteRequest) {
+        Note note = new Note();
+        String id = KeyGenerateUtil.genUniqueKey();
+        initNote(note, noteRequest, id);
+        noteDao.save(note);
+    }
+
+    private void initNote(Note note, NoteRequest noteRequest, String id){
         note.setAuthorId(noteRequest.getAuthorId());
         note.setAuthority(noteRequest.getAuthority());
         note.setAuthorName(noteRequest.getAuthorName());
@@ -93,20 +139,20 @@ public class NoteServiceImpl implements NoteService {
         note.setStars(0);
         note.setVisits(0);
         note.setFollows(0);
-        if(noteRequest.getTypes() == TypeEnum.PDF.getCode()){
-            if(noteRequest.getFile() == null){
-                throw new MyException(ResultEnum.FILE_NOT_EXIST);
-            }
-            try {
-                uploadFile(noteRequest.getFile(), noteRequest.getTitle(), id);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }else{
-            note.setContent(noteRequest.getContent());
-        }
-        noteDao.save(note);
     }
+    private String downloadFile(String fileName){
+        String domainOfBucket = "http://ecnuonion.club";
+        String encodedFileName = null;
+        try {
+            encodedFileName = URLEncoder.encode(fileName, "utf-8").replace("+", "%20");
+        } catch (UnsupportedEncodingException e) {
+            throw new MyException(e.getMessage(), -1);
+        }
+        String publicUrl = String.format("%s/%s", domainOfBucket, encodedFileName);
+        Auth auth = Auth.create(accessKey, secretKey);
+        return auth.privateDownloadUrl(publicUrl, expireInSeconds);
+    }
+
     private void uploadFile(MultipartFile file, String title, String id) throws Exception{
         InputStream fileInputStream = file.getInputStream();
         String key = title + id + ".pdf";
@@ -114,7 +160,6 @@ public class NoteServiceImpl implements NoteService {
         UploadManager uploadManager = new UploadManager(cfg);
         Auth auth = Auth.create(accessKey, secretKey);
         String upToken = auth.uploadToken(bucket);
-        System.out.println(file);
         try {
             Response response = uploadManager.put(fileInputStream, key, upToken, null, null);
             DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);

@@ -17,6 +17,8 @@ public enum ResultEnum {
     FILE_NOT_EXIST(1005, "文件不存在"),
     FILE_CANNOT_PARSE(1006, "文件解析出错"),
     FILE_UPLOAD_ERROR(1007, "文件上传出错"),
+    USER_NOT_EXIST(1008, "用户不存在"),
+    WRONG_PASSWORD(1009, "密码错误"),
     ;
     private int code;
     private String message;

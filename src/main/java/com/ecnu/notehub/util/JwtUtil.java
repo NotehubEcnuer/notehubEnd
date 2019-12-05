@@ -15,7 +15,7 @@ import java.util.Date;
  * @date 2019/11/22 -7:12 下午
  */
 public class JwtUtil {
-    private static final String key = "ecnuOnion";
+    private static final String key = "notehub";
     private static final long ttl = 60 * 60 * 24 * 1000;
     public static String createJwt(User user){
         long now = System.currentTimeMillis();

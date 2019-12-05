@@ -30,8 +30,11 @@ spring:
             enable: true
     from: 1452618379@qq.com
 
+
 qiniu:
   accessKey: "SStPJbNpriAFEzb0LvB1ooO7X__CB5xpwt8cE8UE"
   secretKey: "aMbK1T32B4_Gidwm_zbFAVPmaBG2j-DgZkEQLEmT"
   bucket: "notehub"
+
+
 

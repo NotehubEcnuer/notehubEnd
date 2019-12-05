@@ -23,17 +23,19 @@ public class NoteController {
     @Autowired
     private NoteService noteService;
     @GetMapping("/keyword")
+    @LoginRequired
     public ResultEntity getByTitle(@RequestParam String title){
         Page<NoteIndex> results = noteService.findByTitle(title);
         return ResultEntity.succeed(results);
     }
     @GetMapping("/relation")
+    @LoginRequired
     public ResultEntity search(@RequestParam String keyword){
         Page<NoteIndex> results = noteService.search(keyword);
         return ResultEntity.succeed(results);
     }
     @PostMapping("/addPdf")
-    @LoginRequired(loginRequired = false)
+    @LoginRequired
     public ResultEntity addPdf(@RequestParam(value = "file")MultipartFile file,
                                @RequestParam String authorId,
                                @RequestParam String authorName,
@@ -56,16 +58,15 @@ public class NoteController {
         return ResultEntity.succeed();
     }
     @PostMapping("/addNote")
-    @LoginRequired(loginRequired = false)
+    @LoginRequired
     public ResultEntity addNote(@RequestBody NoteRequest noteRequest){
         noteService.addNote(noteRequest);
         return ResultEntity.succeed();
     }
     @GetMapping("/downloadNote")
-    @LoginRequired(loginRequired = false)
+    @LoginRequired
     public ResultEntity downloadPdf(@RequestParam String noteId){
         String link  = noteService.findPdfById(noteId);
         return ResultEntity.succeed(link);
     }
-
 }

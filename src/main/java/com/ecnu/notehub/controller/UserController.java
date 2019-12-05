@@ -1,6 +1,5 @@
 package com.ecnu.notehub.controller;
 
-import com.ecnu.notehub.annotation.LoginRequired;
 import com.ecnu.notehub.domain.User;
 import com.ecnu.notehub.dto.UserRequest;
 import com.ecnu.notehub.enums.ResultEnum;
@@ -25,7 +24,6 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/checkEmail")
-    @LoginRequired(loginRequired = false)
     public ResultEntity checkEmail(@RequestParam String email){
         User user = userService.findByEmail(email);
         if (user != null)
@@ -34,7 +32,6 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    @LoginRequired(loginRequired = false)
     public ResultEntity register(@RequestBody UserRequest userRequest){
         userService.register(userRequest);
         log.info("{}通过ip:{}注册了账号", userRequest.getAccount(), userRequest.getIp());
@@ -42,14 +39,12 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    @LoginRequired(loginRequired = false)
     public ResultEntity login(@RequestBody UserRequest userRequest){
         Map<String, String> loginInfo = userService.login(userRequest);
         return ResultEntity.succeed(loginInfo);
     }
 
     @GetMapping("/sendCode")
-    @LoginRequired(loginRequired = false)
     public ResultEntity sendCode(@RequestParam String email){
         userService.sendCode(email);
         return ResultEntity.succeed();

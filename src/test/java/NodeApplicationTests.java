@@ -35,6 +35,7 @@ public class NodeApplicationTests {
     @Value("${qiniu.bucket}")
     String bucket;
 
+
     @Autowired
     private MailService mailService;
 

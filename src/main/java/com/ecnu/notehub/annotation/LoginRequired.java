@@ -12,5 +12,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
 public @interface LoginRequired {
-    boolean loginRequired() default true;
+//    boolean loginRequired() default true;
 }

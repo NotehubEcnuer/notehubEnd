@@ -10,6 +10,7 @@ import com.ecnu.notehub.service.UserService;
 import com.ecnu.notehub.util.CodeUtil;
 import com.ecnu.notehub.util.JwtUtil;
 import com.ecnu.notehub.util.KeyGenerateUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -26,6 +27,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2019/11/16 -1:58 下午
  */
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
@@ -79,7 +81,7 @@ public class UserServiceImpl implements UserService {
         if (user == null){
             throw new MyException(ResultEnum.USER_NOT_EXIST);
         }
-        if (encoder.matches(password, user.getPassword())){
+        if (!encoder.matches(password, user.getPassword())){
             throw new MyException(ResultEnum.WRONG_PASSWORD);
         }
         Map <String, String> map = new HashMap<>();

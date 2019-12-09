@@ -7,9 +7,9 @@ import java.lang.annotation.Target;
 
 /**
  * @author onion
- * @date 2019/11/22 -7:34 下午
+ * @date 2019/12/9 -8:19 下午
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-public @interface LoginRequired {
+public @interface VerifyParam {
 }

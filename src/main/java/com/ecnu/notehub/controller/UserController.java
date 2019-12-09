@@ -1,5 +1,6 @@
 package com.ecnu.notehub.controller;
 
+import com.ecnu.notehub.annotation.VerifyParam;
 import com.ecnu.notehub.domain.User;
 import com.ecnu.notehub.dto.UserRequest;
 import com.ecnu.notehub.enums.ResultEnum;
@@ -8,8 +9,10 @@ import com.ecnu.notehub.service.UserService;
 import com.ecnu.notehub.vo.ResultEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Map;
 
 /**
@@ -32,14 +35,16 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResultEntity register(@RequestBody UserRequest userRequest){
+    @VerifyParam
+    public ResultEntity register(@Valid @RequestBody UserRequest userRequest, BindingResult result){
         userService.register(userRequest);
         log.info("{}通过ip:{}注册了账号", userRequest.getAccount(), userRequest.getIp());
         return ResultEntity.succeed();
     }
 
     @PostMapping("/login")
-    public ResultEntity login(@RequestBody UserRequest userRequest){
+    @VerifyParam
+    public ResultEntity login(@Valid @RequestBody UserRequest userRequest, BindingResult result){
         Map<String, String> loginInfo = userService.login(userRequest);
         return ResultEntity.succeed(loginInfo);
     }

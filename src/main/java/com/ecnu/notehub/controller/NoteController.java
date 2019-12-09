@@ -1,12 +1,15 @@
 package com.ecnu.notehub.controller;
 
 import com.ecnu.notehub.annotation.LoginRequired;
+import com.ecnu.notehub.annotation.VerifyParam;
 import com.ecnu.notehub.dto.NoteRequest;
 import com.ecnu.notehub.search.NoteIndex;
 import com.ecnu.notehub.service.NoteService;
 import com.ecnu.notehub.vo.ResultEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -59,7 +62,8 @@ public class NoteController {
     }
     @PostMapping("/addNote")
     @LoginRequired
-    public ResultEntity addNote(@RequestBody NoteRequest noteRequest){
+    @VerifyParam
+    public ResultEntity addNote(@Validated @RequestBody NoteRequest noteRequest, BindingResult result){
         noteService.addNote(noteRequest);
         return ResultEntity.succeed();
     }
